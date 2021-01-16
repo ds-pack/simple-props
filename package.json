@@ -1,10 +1,10 @@
 {
-  "name": "template-project",
-  "version": "0.0.0",
+  "name": "simple-props",
+  "version": "0.0.1",
   "main": "dist/index.js",
   "source": "src/index.tsx",
   "types": "dist/index.d.ts",
-  "repository": "git@github.com:hamlim/template-project.git",
+  "repository": "git@github.com:ds-pack/simple-props.git",
   "author": "Matt Hamlin <matthewjameshamlin@gmail.com>",
   "license": "MIT",
   "scripts": {

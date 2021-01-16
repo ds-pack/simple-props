@@ -1,11 +1,11 @@
-# TODO
+# `simple-props`
 
-Make sure to update this with the right documentation!
+TODO
 
 ## Installation:
 
 ```sh
-yarn add TODO
+yarn add simple-props
 ```
 
 ## Usage:
