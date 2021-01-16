@@ -1,0 +1,45 @@
+{
+  "name": "template-project",
+  "version": "0.0.0",
+  "main": "dist/index.js",
+  "source": "src/index.tsx",
+  "types": "dist/index.d.ts",
+  "repository": "git@github.com:hamlim/template-project.git",
+  "author": "Matt Hamlin <matthewjameshamlin@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "prebuild": "rm -rf dist/",
+    "build": "babel src/ --out-dir dist/ --extensions '.ts,.tsx' && tsc",
+    "test": "jest",
+    "test-watch": "jest --watch",
+    "test-cov": "jest --collectCoverage",
+    "prepub": "yarn build",
+    "pub": "yarn prepub && yarn publish --access public",
+    "tsc": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.12.10",
+    "@babel/core": "^7.12.10",
+    "@babel/plugin-proposal-export-default-from": "^7.12.1",
+    "@babel/plugin-transform-runtime": "^7.12.10",
+    "@babel/plugin-transform-typescript": "^7.12.1",
+    "@babel/preset-env": "^7.12.11",
+    "@babel/preset-react": "^7.12.10",
+    "@babel/runtime": "^7.12.5",
+    "@testing-library/jest-dom": "^5.7.0",
+    "@testing-library/react": "^11.2.2",
+    "@types/jest": "^26.0.19",
+    "babel-jest": "^26.0.1",
+    "babel-plugin-styled-components": "^1.10.7",
+    "jest": "^26.0.1",
+    "react": "experimental",
+    "react-dom": "experimental",
+    "react-is": "experimental",
+    "styled-components": "^5.2.1",
+    "typescript": "^4.1.3"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

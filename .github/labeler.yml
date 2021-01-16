@@ -1,0 +1,8 @@
+📚 Documentation:
+  - docs/*
+  - docs/**/*
+  - README.md
+🧪 Tests:
+  - src/__tests__/*
+  - src/__tests__/**/*
+  - src/test
