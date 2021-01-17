@@ -9,13 +9,16 @@
   "license": "MIT",
   "scripts": {
     "prebuild": "rm -rf dist/",
-    "build": "babel src/ --out-dir dist/ --extensions '.ts,.tsx' && tsc",
+    "build": "babel ./src/ --out-dir dist/ --extensions '.ts,.tsx' && tsc --project build.tsconfig.json",
     "test": "jest",
     "test-watch": "jest --watch",
     "test-cov": "jest --collectCoverage",
     "prepub": "yarn build",
     "pub": "yarn prepub && yarn publish --access public",
-    "tsc": "tsc --noEmit"
+    "tsc": "tsc --project base.tsconfig.json --noEmit"
+  },
+  "peerDependencies": {
+    "csstype": "^3.0.6"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.10",
@@ -33,6 +36,7 @@
     "babel-plugin-styled-components": "^1.10.7",
     "csstype": "^3.0.6",
     "jest": "^26.0.1",
+    "prettier": "^2.2.1",
     "react": "experimental",
     "react-dom": "experimental",
     "react-is": "experimental",

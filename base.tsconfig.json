@@ -13,9 +13,8 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "declaration": true,
-    "emitDeclarationOnly": true,
     "outDir": "dist"
   },
-  "exclude": ["node_modules", ".yarn", "src/__tests__/"],
+  "exclude": ["node_modules", ".yarn", "src/__tests__/", "example"],
   "include": ["**/*.ts", "**/*.tsx"]
 }

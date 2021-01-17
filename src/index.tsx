@@ -51,8 +51,8 @@ export default function createSimpleProps({
   toVariable = defaultToVariable,
 }: {
   props: Props
-  findPropInPropConfig: FindProp
-  toVariable: ToVariable
+  findPropInPropConfig?: FindProp
+  toVariable?: ToVariable
 }): SimpleProps {
   let configuredProps = Object.keys(propConfig)
   return function simpleProps(props) {
