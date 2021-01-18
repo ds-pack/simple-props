@@ -23,15 +23,12 @@ let simpleProps = createSimpleProps({
       property: 'backgroundColor',
       scale: 'color',
     },
-    p({ prop, value, props }) {
-      return {
-        paddingLeft: `var(--space-${value})`,
-        paddingRight: `var(--space-${value})`,
-        paddingBottom: `var(--space-${value})`,
-        paddingTop: `var(--space-${value})`,
-      }
-    },
   },
+  pseudoProps: {
+    _hover: '&:hover',
+    _focus: '&:focus',
+  },
+  breakpoints: [200, 400, 800],
 })
 
 // Either pull in your favorite CSS-in-JS library...
@@ -44,7 +41,24 @@ function Box(props) {
   let styles = simpleProps(props)
   return <div {...props} style={styles} />
 }
+
+// or use it to generate styles staticly:
+let styles = simpleProps({
+  _focus: {
+    color: 'primary',
+  },
+  _hover: {
+    color: 'secondary',
+  },
+  bg: 'white',
+})
 ```
+
+Supports:
+
+- Generating static styles
+- Pseudo-props for pseudo selectors
+- Responsive prop values for different values at different breakpoints
 
 ### Tools:
 

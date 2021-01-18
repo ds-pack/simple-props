@@ -1,27 +1,15 @@
 import * as CSS from 'csstype'
 
-export type FindProp = (
-  configuredProps: Array<string>,
-  propName: string,
-) => string | void
-
-function defaultFindPropInPropConfig(
-  configuredProps: Array<string>,
-  propName: string,
-): string | void {
-  return configuredProps.find((prop) => {
-    return prop === propName
-  })
-}
-
 export type ToVariable = ({
   scale,
   value,
   props,
+  breakpoint,
 }: {
   scale: string
   value: any
   props: { [name: string]: any }
+  breakpoint: string | number
 }) => string
 
 function defaultToVariable({ scale, value }) {
@@ -29,57 +17,129 @@ function defaultToVariable({ scale, value }) {
 }
 
 interface Props {
-  [name: string]:
-    | (({
-        prop,
-        value,
-        props,
-      }: {
-        prop: string
-        value: string | number | object
-        props: object
-      }) => object)
-    | { scale: string; property: string }
-    | boolean
+  [name: string]: { scale: string; property: string } | boolean
+}
+export interface PseudoProps {
+  [name: string]: string
+}
+
+export type Breakpoints = Array<string | number>
+
+export type CreateMediaQuery = ({ query }: { query: string }) => string
+
+function defaultCreateMediaQuery({
+  query,
+}: {
+  query: string | number
+}): string {
+  // @ts-ignore
+  let appendPx = typeof query === 'number' || Number(query) == query
+  let units = appendPx ? 'px' : ''
+  return `@media screen and (min-width: ${query}${units})`
+}
+
+function sortByAllFirst(a: string, b: string): number {
+  if (a === '_') {
+    return -1
+  } else if (b === '_') {
+    return 1
+  } else {
+    // @ts-ignore
+    return a - b
+  }
 }
 
 export type SimpleProps = (props: { [name: string]: any }) => CSS.Properties
 
 export default function createSimpleProps({
   props: propConfig,
-  findPropInPropConfig = defaultFindPropInPropConfig,
+  pseudoProps: pseudoConfig = {},
+  breakpoints = undefined,
   toVariable = defaultToVariable,
+  createMediaQuery = defaultCreateMediaQuery,
 }: {
   props: Props
-  findPropInPropConfig?: FindProp
+  pseudoProps?: PseudoProps
+  breakpoints?: Breakpoints
   toVariable?: ToVariable
+  createMediaQuery?: CreateMediaQuery
 }): SimpleProps {
-  let configuredProps = Object.keys(propConfig)
+  let breakpointsProvided = Array.isArray(breakpoints)
   return function simpleProps(props) {
     let styles = {}
+    // color="primary" p={{_: 0, 360: 4}}
     for (let prop in props) {
-      let foundProp = findPropInPropConfig(configuredProps, prop)
-      if (foundProp) {
+      // prop === "color" or prop === "p"
+      let propValue = props[prop]
+      let isSimpleProp = prop in propConfig
+      let isPseudoSimpleProp = prop in pseudoConfig
+
+      if (isPseudoSimpleProp) {
+        // prop === _hover
+        // propValue === { color: 'primary' }
+        // @TODO? Responsive pseudo props?
+        let rawPseudo = pseudoConfig[prop]
+        let pseudoStyles = simpleProps(propValue)
+
+        styles = {
+          ...styles,
+          [rawPseudo]: pseudoStyles,
+        }
+      }
+
+      if (isSimpleProp) {
         let scale, property
-        let resolvedConfig = propConfig[foundProp]
+        let resolvedConfig = propConfig[prop]
         if (typeof resolvedConfig === 'boolean') {
           scale = property = prop
-        } else if (typeof resolvedConfig === 'function') {
-          styles = {
-            ...styles,
-            ...resolvedConfig({
-              prop,
-              value: props[prop],
-              props,
-            }),
-          }
         } else {
           scale = resolvedConfig.scale
           property = resolvedConfig.property
         }
-        styles = {
-          ...styles,
-          [property]: toVariable({ scale, value: props[prop], props }),
+        if (
+          breakpointsProvided &&
+          typeof propValue === 'object' &&
+          propValue != null
+        ) {
+          // _, 360
+          let queries = Object.keys(propValue).sort(sortByAllFirst)
+          styles = queries.reduce((newStyles, query) => {
+            if (query === '_') {
+              return {
+                ...newStyles,
+                [property]: toVariable({
+                  scale,
+                  value: propValue[query],
+                  props,
+                  breakpoint: query,
+                }),
+              }
+            }
+            let queryKey = createMediaQuery({ query })
+            return {
+              ...newStyles,
+              [queryKey]: {
+                ...(newStyles[queryKey] || {}),
+                [property]: toVariable({
+                  scale,
+                  value: propValue[query],
+                  props,
+                  breakpoint: query,
+                }),
+              },
+            }
+          }, styles)
+        } else {
+          // non-responsive prop values
+          styles = {
+            ...styles,
+            [property]: toVariable({
+              scale,
+              value: props[prop],
+              props,
+              breakpoint: '_',
+            }),
+          }
         }
       }
     }
