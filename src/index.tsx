@@ -23,8 +23,6 @@ export interface PseudoProps {
   [name: string]: string
 }
 
-export type Breakpoints = Array<string | number>
-
 export type CreateMediaQuery = ({ query }: { query: string }) => string
 
 function defaultCreateMediaQuery({
@@ -54,17 +52,14 @@ export type SimpleProps = (props: { [name: string]: any }) => CSS.Properties
 export default function createSimpleProps({
   props: propConfig,
   pseudoProps: pseudoConfig = {},
-  breakpoints = undefined,
   toVariable = defaultToVariable,
   createMediaQuery = defaultCreateMediaQuery,
 }: {
   props: Props
   pseudoProps?: PseudoProps
-  breakpoints?: Breakpoints
   toVariable?: ToVariable
   createMediaQuery?: CreateMediaQuery
 }): SimpleProps {
-  let breakpointsProvided = Array.isArray(breakpoints)
   return function simpleProps(props) {
     let styles = {}
     // color="primary" p={{_: 0, 360: 4}}
@@ -96,11 +91,7 @@ export default function createSimpleProps({
           scale = resolvedConfig.scale
           property = resolvedConfig.property
         }
-        if (
-          breakpointsProvided &&
-          typeof propValue === 'object' &&
-          propValue != null
-        ) {
+        if (typeof propValue === 'object' && propValue != null) {
           // _, 360
           let queries = Object.keys(propValue).sort(sortByAllFirst)
           styles = queries.reduce((newStyles, query) => {

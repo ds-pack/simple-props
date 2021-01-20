@@ -76,7 +76,6 @@ test('supports responsive props', () => {
     props: {
       color: true,
     },
-    breakpoints: [200, 400, 800],
   })
 
   let styles = simpleProps({
@@ -105,7 +104,6 @@ test('supports custom media queries for responsive props', () => {
     props: {
       color: true,
     },
-    breakpoints: [200, 400, 800],
     createMediaQuery({ query }) {
       return `@media screen and (max-width: ${query}px)`
     },
