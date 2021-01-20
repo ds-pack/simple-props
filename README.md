@@ -44,10 +44,13 @@ function Box(props) {
 // or use it to generate styles staticly:
 let styles = simpleProps({
   _focus: {
-    color: 'primary',
+    // $primary will reference a css variable
+    color: '$primary',
+    // tomato will be output as the raw value
+    bg: 'tomato',
   },
   _hover: {
-    color: 'secondary',
+    color: '$secondary',
   },
   bg: 'white',
 })

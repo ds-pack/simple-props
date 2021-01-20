@@ -15,7 +15,7 @@ test('it generates a styles object when called with props', () => {
   }
   let simpleProps = createSimpleProps({ props: propConfig })
 
-  let styles = simpleProps({ color: 'primary' })
+  let styles = simpleProps({ color: '$primary' })
 
   expect(styles).toMatchInlineSnapshot(`
     Object {
@@ -35,7 +35,7 @@ test('supports creating your own variables', () => {
     },
   })
 
-  let styles = simpleProps({ color: 'primary' })
+  let styles = simpleProps({ color: '$primary' })
 
   expect(styles).toMatchInlineSnapshot(`
     Object {
@@ -55,9 +55,9 @@ test('supports pseudo props', () => {
   })
 
   let styles = simpleProps({
-    color: 'primary',
+    color: '$primary',
     _hover: {
-      color: 'secondary',
+      color: '$secondary',
     },
   })
 
@@ -80,9 +80,9 @@ test('supports responsive props', () => {
 
   let styles = simpleProps({
     color: {
-      _: 'primary',
-      200: 'secondary',
-      800: 'white',
+      _: '$primary',
+      200: '$secondary',
+      800: '$white',
     },
   })
 
@@ -111,9 +111,9 @@ test('supports custom media queries for responsive props', () => {
 
   let styles = simpleProps({
     color: {
-      _: 'primary',
-      200: 'secondary',
-      800: 'white',
+      _: '$primary',
+      200: '$secondary',
+      800: '$white',
     },
   })
 
@@ -126,6 +126,21 @@ test('supports custom media queries for responsive props', () => {
         "color": "var(--color-white)",
       },
       "color": "var(--color-primary)",
+    }
+  `)
+})
+
+test('supports non-variable style props', () => {
+  let propConfig = {
+    color: true,
+  }
+  let simpleProps = createSimpleProps({ props: propConfig })
+
+  let styles = simpleProps({ color: 'cornflowerblue' })
+
+  expect(styles).toMatchInlineSnapshot(`
+    Object {
+      "color": "cornflowerblue",
     }
   `)
 })
