@@ -95,15 +95,20 @@ export default function createSimpleProps({
           // _, 360
           let queries = Object.keys(propValue).sort(sortByAllFirst)
           styles = queries.reduce((newStyles, query) => {
+            let tokenMatch = propValue[query].match(/\$([^\s]+)/)
+            let tokenValue =
+              tokenMatch && tokenMatch.length > 0 ? tokenMatch[1] : null
             if (query === '_') {
               return {
                 ...newStyles,
-                [property]: toVariable({
-                  scale,
-                  value: propValue[query],
-                  props,
-                  breakpoint: query,
-                }),
+                [property]: tokenValue
+                  ? toVariable({
+                      scale,
+                      value: tokenValue,
+                      props,
+                      breakpoint: query,
+                    })
+                  : propValue[query],
               }
             }
             let queryKey = createMediaQuery({ query })
@@ -111,25 +116,32 @@ export default function createSimpleProps({
               ...newStyles,
               [queryKey]: {
                 ...(newStyles[queryKey] || {}),
-                [property]: toVariable({
-                  scale,
-                  value: propValue[query],
-                  props,
-                  breakpoint: query,
-                }),
+                [property]: tokenValue
+                  ? toVariable({
+                      scale,
+                      value: tokenValue,
+                      props,
+                      breakpoint: query,
+                    })
+                  : propValue[query],
               },
             }
           }, styles)
         } else {
+          let tokenMatch = propValue.match(/\$([^\s]+)/)
+          let tokenValue =
+            tokenMatch && tokenMatch.length > 0 ? tokenMatch[1] : null
           // non-responsive prop values
           styles = {
             ...styles,
-            [property]: toVariable({
-              scale,
-              value: props[prop],
-              props,
-              breakpoint: '_',
-            }),
+            [property]: tokenValue
+              ? toVariable({
+                  scale,
+                  value: tokenValue,
+                  props,
+                  breakpoint: '_',
+                })
+              : propValue,
           }
         }
       }
