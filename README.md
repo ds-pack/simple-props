@@ -28,7 +28,6 @@ let simpleProps = createSimpleProps({
     _hover: '&:hover',
     _focus: '&:focus',
   },
-  breakpoints: [200, 400, 800],
 })
 
 // Either pull in your favorite CSS-in-JS library...
