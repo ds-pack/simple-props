@@ -1,6 +1,6 @@
 {
   "name": "simple-props",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "main": "dist/index.js",
   "source": "src/index.tsx",
   "types": "dist/index.d.ts",
@@ -17,9 +17,7 @@
     "pub": "yarn prepub && yarn publish --access public",
     "tsc": "tsc --project base.tsconfig.json --noEmit"
   },
-  "peerDependencies": {
-    "csstype": "^3.0.6"
-  },
+  "peerDependencies": {},
   "devDependencies": {
     "@babel/cli": "^7.12.10",
     "@babel/core": "^7.12.10",
@@ -34,7 +32,6 @@
     "@types/jest": "^26.0.19",
     "babel-jest": "^26.0.1",
     "babel-plugin-styled-components": "^1.10.7",
-    "csstype": "^3.0.6",
     "jest": "^26.0.1",
     "prettier": "^2.2.1",
     "react": "experimental",

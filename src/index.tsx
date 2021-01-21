@@ -1,5 +1,3 @@
-import * as CSS from 'csstype'
-
 export type ToVariable = ({
   scale,
   value,
@@ -47,7 +45,9 @@ function sortByAllFirst(a: string, b: string): number {
   }
 }
 
-export type SimpleProps = (props: { [name: string]: any }) => CSS.Properties
+export type SimpleProps = (props: {
+  [name: string]: any
+}) => { [key: string]: string }
 
 export default function createSimpleProps({
   props: propConfig,
