@@ -95,7 +95,11 @@ export default function createSimpleProps({
           // _, 360
           let queries = Object.keys(propValue).sort(sortByAllFirst)
           styles = queries.reduce((newStyles, query) => {
-            let tokenMatch = propValue[query].match(/\$([^\s]+)/)
+            let tokenMatch =
+              // This value could be a number which doesn't support `.match`
+              typeof propValue[query] === 'string'
+                ? typeof propValue[query].match(/\$([^\s]+)/)
+                : null
             let tokenValue =
               tokenMatch && tokenMatch.length > 0 ? tokenMatch[1] : null
             if (query === '_') {
@@ -128,7 +132,9 @@ export default function createSimpleProps({
             }
           }, styles)
         } else {
-          let tokenMatch = propValue.match(/\$([^\s]+)/)
+          let tokenMatch =
+            // This value could be a number which doesn't support `.match`
+            typeof propValue === 'string' ? propValue.match(/\$([^\s]+)/) : null
           let tokenValue =
             tokenMatch && tokenMatch.length > 0 ? tokenMatch[1] : null
           // non-responsive prop values
