@@ -15,7 +15,10 @@ function defaultToVariable({ scale, value }) {
 }
 
 interface Props {
-  [name: string]: { scale: string; property: string } | boolean
+  [name: string]:
+    | { scale: string; property: string }
+    | { scale: string; properties: Array<string> }
+    | boolean
 }
 export interface PseudoProps {
   [name: string]: string
@@ -83,13 +86,16 @@ export default function createSimpleProps({
       }
 
       if (isSimpleProp) {
-        let scale, property
+        let scale,
+          properties = []
         let resolvedConfig = propConfig[prop]
         if (typeof resolvedConfig === 'boolean') {
-          scale = property = prop
+          scale = prop
+          properties.push(prop)
         } else {
           scale = resolvedConfig.scale
-          property = resolvedConfig.property
+          // @ts-ignore
+          properties = resolvedConfig.properties || [resolvedConfig.property]
         }
         if (typeof propValue === 'object' && propValue != null) {
           // _, 360
@@ -98,21 +104,27 @@ export default function createSimpleProps({
             let tokenMatch =
               // This value could be a number which doesn't support `.match`
               typeof propValue[query] === 'string'
-                ? typeof propValue[query].match(/\$([^\s]+)/)
+                ? propValue[query].match(/\$([^\s]+)/)
                 : null
             let tokenValue =
               tokenMatch && tokenMatch.length > 0 ? tokenMatch[1] : null
             if (query === '_') {
               return {
                 ...newStyles,
-                [property]: tokenValue
-                  ? toVariable({
-                      scale,
-                      value: tokenValue,
-                      props,
-                      breakpoint: query,
-                    })
-                  : propValue[query],
+                ...properties.reduce(
+                  (sty, property) => ({
+                    ...sty,
+                    [property]: tokenValue
+                      ? toVariable({
+                          scale,
+                          value: tokenValue,
+                          props,
+                          breakpoint: query,
+                        })
+                      : propValue[query],
+                  }),
+                  {},
+                ),
               }
             }
             let queryKey = createMediaQuery({ query })
@@ -120,14 +132,20 @@ export default function createSimpleProps({
               ...newStyles,
               [queryKey]: {
                 ...(newStyles[queryKey] || {}),
-                [property]: tokenValue
-                  ? toVariable({
-                      scale,
-                      value: tokenValue,
-                      props,
-                      breakpoint: query,
-                    })
-                  : propValue[query],
+                ...properties.reduce(
+                  (sty, property) => ({
+                    ...sty,
+                    [property]: tokenValue
+                      ? toVariable({
+                          scale,
+                          value: tokenValue,
+                          props,
+                          breakpoint: query,
+                        })
+                      : propValue[query],
+                  }),
+                  {},
+                ),
               },
             }
           }, styles)
@@ -140,14 +158,20 @@ export default function createSimpleProps({
           // non-responsive prop values
           styles = {
             ...styles,
-            [property]: tokenValue
-              ? toVariable({
-                  scale,
-                  value: tokenValue,
-                  props,
-                  breakpoint: '_',
-                })
-              : propValue,
+            ...properties.reduce(
+              (sty, property) => ({
+                ...sty,
+                [property]: tokenValue
+                  ? toVariable({
+                      scale,
+                      value: tokenValue,
+                      props,
+                      breakpoint: '_',
+                    })
+                  : propValue,
+              }),
+              {},
+            ),
           }
         }
       }

@@ -144,3 +144,24 @@ test('supports non-variable style props', () => {
     }
   `)
 })
+
+test('supports multiple properties for a single prop', () => {
+  let simpleProps = createSimpleProps({
+    props: {
+      paddingX: {
+        scale: 'space',
+        properties: ['paddingLeft', 'paddingRight'],
+      },
+    },
+  })
+
+  let styles = simpleProps({
+    paddingX: 4,
+  })
+  expect(styles).toMatchInlineSnapshot(`
+    Object {
+      "paddingLeft": 4,
+      "paddingRight": 4,
+    }
+  `)
+})
